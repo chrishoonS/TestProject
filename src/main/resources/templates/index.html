@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>소셜로그인 예제</title>
+</head>
+
+<body>
+<div>
+    <p><a th:href="@{|${kakaoUrl}|}">
+        <img th:src="@{/kakao/img/kakao_login_medium_narrow.png}" style="width:150px; height:40px;" alt="카카오로그인">
+    </a></p>
+    <p><a th:href="@{|${naverUrl}|}">
+        <img th:src="@{/naver/img/naver_login_medium_narrow.png}" style="width:150px; height:40px;" alt="네이버로그인">
+    </a></p>
+
+</div>
+</body>
+</html>
