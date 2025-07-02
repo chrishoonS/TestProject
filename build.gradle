@@ -26,6 +26,9 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -43,10 +46,17 @@ dependencies {
     // Spring Boot 3.x 이상부터는 javax.servlet 대신 jakarta.servlet 패키지를 사용
     implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
+    implementation 'org.postgresql:postgresql:42.7.7'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // 또는 최신 버전
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgs "-javaagent:${System.properties['user.home']}/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.6/byte-buddy-agent-1.17.6.jar"
 }
+
+
