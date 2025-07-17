@@ -46,9 +46,30 @@ public class TestCrawl {
                 targetLink.click();
                 Thread.sleep(2000);
 
+                // 헤드라인
+                WebElement headLineTitle = driver.findElement(By.cssSelector("a.sa_head_link"));
+                log.info("📰 {}", headLineTitle.getText());
+                List<WebElement> headLines = driver.findElements(By.cssSelector("li.sa_item._SECTION_HEADLINE:not(.is_blind)"));
+
+                int idx = 1;
+
+                for(WebElement headLine : headLines) {
+                    // a 태그 찾기 (href 값 가져오기)
+                    WebElement linkElement = headLine.findElement(By.cssSelector("a.sa_text_title"));
+                    String href = linkElement.getDomAttribute("href");
+
+                    // strong 태그 찾기 (제목 텍스트)
+                    WebElement titleElement = linkElement.findElement(By.cssSelector("strong.sa_text_strong"));
+                    String title = trimTitleMax40(titleElement.getText());
+
+                    log.info("{}. {} → {} / 제목길이 : {}", idx, title,  href, title.length());
+                    idx++;
+                }
+
                 // 다시 상단 탭 리스트 새로 가져오기 (DOM 재로딩 문제 방지)
                 tabMenu = driver.findElements(By.cssSelector("li.Nlist_item"));
                 tabLink = driver.findElements(By.cssSelector("a.Nitem_link"));
+                log.info("=======================================================\n");
             }
 
 
@@ -85,6 +106,13 @@ public class TestCrawl {
 
         }
 
+    }
+
+    private static String trimTitleMax40(String text) {
+        if (text.length() > 40) {
+            return text.substring(0, 40) + "...";
+        }
+        return text;
     }
 
 }
