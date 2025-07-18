@@ -6,6 +6,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -33,7 +35,22 @@ public class TestCrawl {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         String regDttm = ldt.format(dtf);
 
-        WebDriver driver = new ChromeDriver();
+        // ✅ Headless 모드 설정
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new")
+                .addArguments("--disable-gpu")
+                .addArguments("--no-sandbox")
+                .addArguments("--disable-dev-shm-usage");          // UI 없이 실행 (Chrome 109+)
+
+//        options.addArguments("--disable-gpu");           // GPU 가속 비활성화
+//        options.addArguments("--no-sandbox");            // Linux 환경 호환성
+//        options.addArguments("--disable-dev-shm-usage"); // 메모리 부족 방지
+
+        ChromeDriverService service = new ChromeDriverService.Builder()
+                .withSilent(true)
+                .build();
+
+        WebDriver driver = new ChromeDriver(service, options);
         driver.get(NEWS_HOME_URL);
         String siteTitle = driver.getTitle();
 
@@ -68,7 +85,7 @@ public class TestCrawl {
                 String targetTabLink = targetLink.getDomAttribute("href");
 
                 targetLink.click();
-                Thread.sleep(500);
+                Thread.sleep(100);
                 
                 // 헤드라인
                 String headlineInfo = String.format("%s %s 주요 헤드라인(%s)", emojiArr[i], targetTabName, targetTabLink);
@@ -102,29 +119,6 @@ public class TestCrawl {
             }
 
             log.info("크롤링 결과가 \"{}\" 경로에 저장되었습니다.", finalFilePath);
-
-
-//            // 로그인 버튼 찾기
-//            WebElement loginButton = driver.findElement(By.cssSelector("#gnb_login_button"));
-//
-//            // 로그인 버튼 클릭
-//            loginButton.click();
-//            Thread.sleep(3000);
-//
-//            // 아이디 입력
-//            WebElement idField = driver.findElement(By.id("id"));
-//            idField.sendKeys("thdwlgns113");
-//
-//            // 비밀번호 입력
-//            WebElement pwField = driver.findElement(By.id("pw"));
-//            pwField.sendKeys("hooney90#");
-//
-//            // 로그인 버튼 클릭
-//            WebElement submitButton = driver.findElement(By.id("log.login"));
-//            submitButton.click();
-//
-            Thread.sleep(2000); // 페이지 로딩 대기
-
 
         } catch (NoSuchElementException e) {
             log.error("기사 파싱 실패: {}", e.getMessage());
