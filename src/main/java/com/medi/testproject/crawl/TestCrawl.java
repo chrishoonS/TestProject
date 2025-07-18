@@ -2,36 +2,62 @@ package com.medi.testproject.crawl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
 public class TestCrawl {
 
     private static final String NEWS_HOME_URL = "https://news.naver.com";
+    private static final String NEWS_TOP_MENU = "li.Nlist_item";
+    private static final String NEWS_TOP_MENU_LINK = "a.Nitem_link";
+    private static final String NEWS_HEADLINE_LIST = "li.sa_item._SECTION_HEADLINE:not(.is_blind)";
+    private static final String NEWS_HEADLINE_A_TAG_LINK = "a.sa_text_title";
+    private static final String NEWS_HEADLINE_TITLE = "strong.sa_text_strong";
+
+    // 결과 저장할 파일 경로
+    private static final String filePath = "/Users/song/Downloads/";
 
     public static void main(String[] args) {
+
+        LocalDateTime ldt = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        String regDttm = ldt.format(dtf);
 
         WebDriver driver = new ChromeDriver();
         driver.get(NEWS_HOME_URL);
         String siteTitle = driver.getTitle();
 
-        try {
+        String fileName = "NAVER_Headline_News_" + regDttm + ".txt";
+        String finalFilePath = filePath + fileName;
+
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(finalFilePath, false))) {
 
             log.info("{} :::::: Started!!!!!",  siteTitle);
+            writer.write("====================\n네이버 뉴스 크롤링 결과\n====================\n\n");
+
 
             // 상단 탭 메뉴 리스트 선택
-            List<WebElement> tabMenu = driver.findElements(By.cssSelector("li.Nlist_item"));
+            List<WebElement> tabMenu = driver.findElements(By.cssSelector(NEWS_TOP_MENU));
 
             // 상단 탭 메뉴에 대한 링크 선택
-            List<WebElement> tabLink = driver.findElements(By.cssSelector("a.Nitem_link"));
+            List<WebElement> tabLink = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
 
-            int tebMenuCount = tabMenu.size();
+            int tabMenuCount = tabMenu.size();
 
-            for (int i = 1; i < tebMenuCount; i++) {
+            // 헤드라인 이모지
+            String[] emojiArr = new String[]{"", "🏢", "💲", "👥", "🎬", "💻", "🌏"};
+
+            for (int i = 1; i < tabMenuCount; i++) {
 
                 if(i > 6) break; // 뉴스-랭킹 탭 이후엔 조회 X
 
@@ -41,36 +67,41 @@ public class TestCrawl {
                 String targetTabName = targetTab.getText();
                 String targetTabLink = targetLink.getDomAttribute("href");
 
-                log.info(" Tab " + i + " ::::: {} / {}", targetTabName, targetTabLink);
-
                 targetLink.click();
-                Thread.sleep(2000);
-
+                Thread.sleep(500);
+                
                 // 헤드라인
-                WebElement headLineTitle = driver.findElement(By.cssSelector("a.sa_head_link"));
-                log.info("📰 {}", headLineTitle.getText());
-                List<WebElement> headLines = driver.findElements(By.cssSelector("li.sa_item._SECTION_HEADLINE:not(.is_blind)"));
+                String headlineInfo = String.format("%s %s 주요 헤드라인(%s)", emojiArr[i], targetTabName, targetTabLink);
+                log.info(headlineInfo);
+                writer.write("----------------------------------------------------------\n" + headlineInfo + "\n----------------------------------------------------------\n");
 
+                List<WebElement> headLines = driver.findElements(By.cssSelector(NEWS_HEADLINE_LIST));
                 int idx = 1;
 
                 for(WebElement headLine : headLines) {
                     // a 태그 찾기 (href 값 가져오기)
-                    WebElement linkElement = headLine.findElement(By.cssSelector("a.sa_text_title"));
+                    WebElement linkElement = headLine.findElement(By.cssSelector(NEWS_HEADLINE_A_TAG_LINK));
                     String href = linkElement.getDomAttribute("href");
 
                     // strong 태그 찾기 (제목 텍스트)
-                    WebElement titleElement = linkElement.findElement(By.cssSelector("strong.sa_text_strong"));
-                    String title = trimTitleMax40(titleElement.getText());
+                    WebElement titleElement = linkElement.findElement(By.cssSelector(NEWS_HEADLINE_TITLE));
+                    String headLineTitle = titleElement.getText();
 
-                    log.info("{}. {} → {} / 제목길이 : {}", idx, title,  href, title.length());
+                    String articleInfo = String.format("%d. %s(%s)", idx, headLineTitle, href);
+                    log.info(articleInfo);
+                    writer.write(articleInfo + "\n");
                     idx++;
+
                 }
 
+                writer.write("\n\n");
+
                 // 다시 상단 탭 리스트 새로 가져오기 (DOM 재로딩 문제 방지)
-                tabMenu = driver.findElements(By.cssSelector("li.Nlist_item"));
-                tabLink = driver.findElements(By.cssSelector("a.Nitem_link"));
-                log.info("=======================================================\n");
+                tabMenu = driver.findElements(By.cssSelector(NEWS_TOP_MENU));
+                tabLink = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
             }
+
+            log.info("크롤링 결과가 \"{}\" 경로에 저장되었습니다.", finalFilePath);
 
 
 //            // 로그인 버튼 찾기
@@ -92,27 +123,20 @@ public class TestCrawl {
 //            WebElement submitButton = driver.findElement(By.id("log.login"));
 //            submitButton.click();
 //
-            Thread.sleep(5000); // 로그인 후 페이지 로딩 대기
+            Thread.sleep(2000); // 페이지 로딩 대기
 
-            log.info("현재 페이지 URL: {}", driver.getCurrentUrl()); // 페이지 확인용 로그
-            log.info("{} :::::: Ended!!!!!", siteTitle);
 
+        } catch (NoSuchElementException e) {
+            log.error("기사 파싱 실패: {}", e.getMessage());
+        } catch (IOException e) {
+            log.error("파일 저장 오류: {}", e.getMessage());
         } catch (Exception e) {
-
             log.error("{} :::::: ERROR AND EXIT!!!!!", e.toString());
-
-        } finally {
+        }finally {
             driver.quit();
 
         }
 
-    }
-
-    private static String trimTitleMax40(String text) {
-        if (text.length() > 40) {
-            return text.substring(0, 40) + "...";
-        }
-        return text;
     }
 
 }
