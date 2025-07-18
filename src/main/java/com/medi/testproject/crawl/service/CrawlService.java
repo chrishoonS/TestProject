@@ -1,4 +1,4 @@
-package com.medi.testproject.crawl;
+package com.medi.testproject.crawl.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -8,6 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,7 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
-public class TestCrawl {
+@Service
+public class CrawlService {
 
     private static final String NEWS_HOME_URL = "https://news.naver.com";
     private static final String NEWS_TOP_MENU = "li.Nlist_item";
@@ -29,22 +32,22 @@ public class TestCrawl {
     // 결과 저장할 파일 경로
     private static final String filePath = "/Users/song/Downloads/";
 
-    public static void main(String[] args) {
+    @Scheduled(cron = "0 0 9-17 ? * MON-FRI")
+    public void crawlNaverNews() {
 
         LocalDateTime ldt = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         String regDttm = ldt.format(dtf);
 
+        log.info("[스케줄 실행] 평일 시간대 헤드라인 뉴스 크롤링 실행!!!!!!!");
+
         // ✅ Headless 모드 설정
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new")
-                .addArguments("--disable-gpu")
-                .addArguments("--no-sandbox")
-                .addArguments("--disable-dev-shm-usage");          // UI 없이 실행 (Chrome 109+)
 
-//        options.addArguments("--disable-gpu");           // GPU 가속 비활성화
-//        options.addArguments("--no-sandbox");            // Linux 환경 호환성
-//        options.addArguments("--disable-dev-shm-usage"); // 메모리 부족 방지
+        options.addArguments("--headless=new")
+                .addArguments("--disable-gpu")              // GPU 가속 비활성화
+                .addArguments("--no-sandbox")               // Linux 환경 호환성
+                .addArguments("--disable-dev-shm-usage");   // 메모리 부족 방지
 
         ChromeDriverService service = new ChromeDriverService.Builder()
                 .withSilent(true)
@@ -86,7 +89,7 @@ public class TestCrawl {
 
                 targetLink.click();
                 Thread.sleep(100);
-                
+
                 // 헤드라인
                 String headlineInfo = String.format("%s %s 주요 헤드라인(%s)", emojiArr[i], targetTabName, targetTabLink);
                 log.info(headlineInfo);
@@ -132,5 +135,4 @@ public class TestCrawl {
         }
 
     }
-
 }
