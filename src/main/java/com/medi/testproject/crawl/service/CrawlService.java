@@ -29,110 +29,119 @@ public class CrawlService {
     private static final String NEWS_HEADLINE_A_TAG_LINK = "a.sa_text_title";
     private static final String NEWS_HEADLINE_TITLE = "strong.sa_text_strong";
 
-    // 결과 저장할 파일 경로
-    private static final String filePath = "/Users/song/Downloads/news/";
+    // 결과 저장 경로 (서버 환경에 따라 절대경로 또는 configurable)
+    private static final String FILE_PATH = "/Users/song/Downloads/news/";
 
+    // 뉴스 카테고리별 이모지
+    private static final String[] CATEGORY_EMOJIS_ARR = {"", "🏢", "💲", "👥", "🎬", "💻", "🌏"};
+
+    /**
+     * 네이버 뉴스 크롤링 스케줄러
+     * 평일 09:00 ~ 17:00 매 정시에 실행
+     */
     @Scheduled(cron = "0 0 9-17 ? * MON-FRI")
     public void crawlNaverNews() {
 
-        LocalDateTime ldt = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-        String regDttm = ldt.format(dtf);
+        // 실행 시간 로깅
+        log.info("[스케줄 실행] 평일 시간대 헤드라인 뉴스 크롤링 시작");
 
-        log.info("[스케줄 실행] 평일 시간대 헤드라인 뉴스 크롤링 실행!!!!!!!");
+        // 실행 시점 타임스탬프 생성
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        String fileName = String.format("NAVER_Headline_News_%s.txt", timestamp);
+        String finalFilePath = FILE_PATH + fileName;
 
-        // ✅ Headless 모드 설정
-        ChromeOptions options = new ChromeOptions();
+        // Headless 크롬 옵션 설정
+        WebDriver driver = initWebDriver();
 
-        options.addArguments("--headless=new")
-                .addArguments("--disable-gpu")              // GPU 가속 비활성화
-                .addArguments("--no-sandbox")               // Linux 환경 호환성
-                .addArguments("--disable-dev-shm-usage");   // 메모리 부족 방지
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(finalFilePath, false))) {
 
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .withSilent(true)
-                .build();
+            // 네이버 뉴스 메인 접속
+            driver.get(NEWS_HOME_URL);
+            log.info("{} :::::: Started!!!!!", driver.getTitle());
 
-        WebDriver driver = new ChromeDriver(service, options);
-        driver.get(NEWS_HOME_URL);
-        String siteTitle = driver.getTitle();
-
-        String fileName = "NAVER_Headline_News_" + regDttm + ".txt";
-        String finalFilePath = filePath + fileName;
-
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(finalFilePath, false))) {
-
-            log.info("{} :::::: Started!!!!!",  siteTitle);
+            // 파일 헤더 작성
             writer.write("====================\n네이버 뉴스 크롤링 결과\n====================\n\n");
 
-
-            // 상단 탭 메뉴 리스트 선택
+            // 상단 탭 메뉴 요소 가져오기
             List<WebElement> tabMenu = driver.findElements(By.cssSelector(NEWS_TOP_MENU));
-
-            // 상단 탭 메뉴에 대한 링크 선택
-            List<WebElement> tabLink = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
+            List<WebElement> tabLinks = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
 
             int tabMenuCount = tabMenu.size();
+            
+            // 탭 순회 (정치~세계까지만, 인덱스 1~6)
+            for (int i = 1; i < tabMenuCount && i <= 6; i++) {
 
-            // 헤드라인 이모지
-            String[] emojiArr = new String[]{"", "🏢", "💲", "👥", "🎬", "💻", "🌏"};
+                // 탭명 및 URL
+                String tabName = tabMenu.get(i).getText();
+                String tabUrl = tabLinks.get(i).getDomAttribute("href");
 
-            for (int i = 1; i < tabMenuCount; i++) {
+                // 탭 클릭 후 잠시 대기
+                tabLinks.get(i).click();
+                Thread.sleep(300);
 
-                if(i > 6) break; // 뉴스-랭킹 탭 이후엔 조회 X
+                // 헤드라인 섹션 로깅 및 파일 기록
+                String header = String.format("%s %s 주요 헤드라인 (%s)", CATEGORY_EMOJIS_ARR[i], tabName, tabUrl);
+                log.info(header);
+                writer.write("----------------------------------------------------------\n" + header + "\n----------------------------------------------------------\n");
 
-                WebElement targetTab = tabMenu.get(i);      // 해당 탭 선택
-                WebElement targetLink = tabLink.get(i);     // 해당 탭에 대한 url
-
-                String targetTabName = targetTab.getText();
-                String targetTabLink = targetLink.getDomAttribute("href");
-
-                targetLink.click();
-                Thread.sleep(100);
-
-                // 헤드라인
-                String headlineInfo = String.format("%s %s 주요 헤드라인(%s)", emojiArr[i], targetTabName, targetTabLink);
-                log.info(headlineInfo);
-                writer.write("----------------------------------------------------------\n" + headlineInfo + "\n----------------------------------------------------------\n");
-
-                List<WebElement> headLines = driver.findElements(By.cssSelector(NEWS_HEADLINE_LIST));
-                int idx = 1;
-
-                for(WebElement headLine : headLines) {
-                    // a 태그 찾기 (href 값 가져오기)
-                    WebElement linkElement = headLine.findElement(By.cssSelector(NEWS_HEADLINE_A_TAG_LINK));
-                    String href = linkElement.getDomAttribute("href");
-
-                    // strong 태그 찾기 (제목 텍스트)
-                    WebElement titleElement = linkElement.findElement(By.cssSelector(NEWS_HEADLINE_TITLE));
-                    String headLineTitle = titleElement.getText();
-
-                    String articleInfo = String.format("%d. %s(%s)", idx, headLineTitle, href);
-                    log.info(articleInfo);
-                    writer.write(articleInfo + "\n");
-                    idx++;
-
-                }
+                // 헤드라인 기사 크롤링
+                List<WebElement> headlines = driver.findElements(By.cssSelector(NEWS_HEADLINE_LIST));
+                writeHeadlines(writer, headlines);
 
                 writer.write("\n\n");
 
-                // 다시 상단 탭 리스트 새로 가져오기 (DOM 재로딩 문제 방지)
+                // DOM 새로 로드된 후 상단 탭 요소 다시 가져오기
                 tabMenu = driver.findElements(By.cssSelector(NEWS_TOP_MENU));
-                tabLink = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
+                tabLinks = driver.findElements(By.cssSelector(NEWS_TOP_MENU_LINK));
             }
 
-            log.info("크롤링 결과가 \"{}\" 경로에 저장되었습니다.", finalFilePath);
+            log.info("✅ 크롤링 결과 저장 완료: {}", finalFilePath);
 
         } catch (NoSuchElementException e) {
-            log.error("기사 파싱 실패: {}", e.getMessage());
+            log.error("❌ 기사 요소 파싱 실패: {}", e.getMessage());
         } catch (IOException e) {
-            log.error("파일 저장 오류: {}", e.getMessage());
+            log.error("❌ 파일 저장 실패: {}", e.getMessage());
         } catch (Exception e) {
-            log.error("{} :::::: ERROR AND EXIT!!!!!", e.toString());
-        }finally {
-            driver.quit();
-
+            log.error("❌ 크롤링 중 오류 발생: {}", e.toString());
+        } finally {
+            driver.quit(); // 브라우저 세션 종료
         }
+    }
 
+    /**
+     * WebDriver 초기화 (Headless 크롬)
+     */
+    private WebDriver initWebDriver() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");             // 크롬창 없이 크롤링
+        options.addArguments("--disable-gpu");              // GPU 가속 비활성화
+        options.addArguments("--no-sandbox");               // Linux 환경 호환성
+        options.addArguments("--disable-dev-shm-usage");    // 메모리 부족 방지
+
+        ChromeDriverService service = new ChromeDriverService.Builder()
+                .withSilent(true) // 드라이버 로그 비활성화
+                .build();
+
+        return new ChromeDriver(service, options);
+    }
+
+    /**
+     * 헤드라인 기사 정보 (제목 + URL) 로그 출력 및 파일 저장
+     */
+    private void writeHeadlines(BufferedWriter writer, List<WebElement> headlines) throws IOException {
+        int index = 1;
+        for (WebElement headline : headlines) {
+            try {
+                WebElement linkElement = headline.findElement(By.cssSelector(NEWS_HEADLINE_A_TAG_LINK));
+                String href = linkElement.getDomAttribute("href");
+                String title = linkElement.findElement(By.cssSelector(NEWS_HEADLINE_TITLE)).getText();
+
+                String articleInfo = String.format("%d. %s (%s)", index++, title, href);
+                log.info(articleInfo);
+                writer.write(articleInfo + "\n");
+            } catch (NoSuchElementException e) {
+                log.warn("⚠️ 특정 헤드라인 요소 파싱 실패: {}", e.getMessage());
+            }
+        }
     }
 }
