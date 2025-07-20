@@ -30,7 +30,7 @@ public class CrawlService {
     private static final String NEWS_HEADLINE_TITLE = "strong.sa_text_strong";
 
     // 결과 저장할 파일 경로
-    private static final String filePath = "/Users/song/Downloads/";
+    private static final String filePath = "/Users/song/Downloads/news/";
 
     @Scheduled(cron = "0 0 9-17 ? * MON-FRI")
     public void crawlNaverNews() {
