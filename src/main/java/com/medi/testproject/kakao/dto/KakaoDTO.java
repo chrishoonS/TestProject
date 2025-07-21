@@ -12,4 +12,7 @@ public class KakaoDTO {
     private String email;
     private String nickname;
 
+    // 공통
+    private String provider; // Kakao, Naver, Google, Apple
+
 }
