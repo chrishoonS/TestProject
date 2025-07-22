@@ -27,17 +27,20 @@ public class NaverService {
     @Value("${naver.redirect.url}")
     private String NAVER_REDIRECT_URL;
 
-    private final static String NAVER_AUTH_URI = "https://nid.naver.com";
-    private final static String NAVER_API_URI = "https://openapi.naver.com";
+    @Value("${naver.auth.uri}")
+    private String NAVER_AUTH_URI;
 
-    public String getNaverLogin() {
+    @Value("${naver.api.uri}")
+    private String NAVER_API_URI;
+
+    public String getLoginUrl() {
         return NAVER_AUTH_URI + "/oauth2.0/authorize"
                 + "?client_id=" + NAVER_CLIENT_ID
                 + "&redirect_uri=" + NAVER_REDIRECT_URL
                 + "&response_type=code";
     }
 
-    public NaverDTO getNaverInfo(String code) throws Exception {
+    public NaverDTO getUserInfo(String code) throws Exception {
         if (code == null) throw new Exception("Failed get authorization code");
 
         String accessToken;

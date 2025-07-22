@@ -11,4 +11,7 @@ public class NaverDTO {
     private String email;
     private String name;
 
+    // 공통
+    private String provider; // Kakao, Naver, Google, Apple
+
 }

@@ -22,7 +22,7 @@ public class NaverController {
 
     @GetMapping("/callback")
     public ResponseEntity<MsgEntity> callback(HttpServletRequest request) throws Exception {
-        NaverDTO naverInfo = naverService.getNaverInfo(request.getParameter("code"));
+        NaverDTO naverInfo = naverService.getUserInfo(request.getParameter("code"));
 
         return ResponseEntity.ok()
                 .body(new MsgEntity("Success", naverInfo));

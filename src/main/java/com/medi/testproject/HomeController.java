@@ -18,7 +18,7 @@ public class HomeController {
     @RequestMapping(value="/", method= RequestMethod.GET)
     public String login(Model model) {
         model.addAttribute("kakaoUrl", kakaoService.getLoginUrl());
-        model.addAttribute("naverUrl", naverService.getNaverLogin());
+        model.addAttribute("naverUrl", naverService.getLoginUrl());
 
         return "index";
     }

@@ -46,11 +46,16 @@ public class KakaoService {
      *  로그인 URL 생성
      **/
     public String getLoginUrl() {
-        return UriComponentsBuilder.fromUriString(KAKAO_AUTH_URI + "/oauth/authorize")
+
+        String loginUrl = UriComponentsBuilder.fromUriString(KAKAO_AUTH_URI + "/oauth/authorize")
                 .queryParam("client_id", KAKAO_CLIENT_ID)
                 .queryParam("redirect_uri", KAKAO_REDIRECT_URL)
                 .queryParam("response_type", "code")
                 .toUriString();
+
+        log.info("Access Token URL ::::: {}", loginUrl);
+
+        return loginUrl;
     }
 
     /**
@@ -73,6 +78,10 @@ public class KakaoService {
 
             // JSON 문자열 → KakaoTokenResponseDTO 객체로 변환
             OAuthTokenResponseDTO tokenDTO = objectMapper.readValue(tokenResponse, OAuthTokenResponseDTO.class);
+
+            log.info("access_token  ::::: {}", tokenDTO.getAccessToken());
+            log.info("refresh_token ::::: {}", tokenDTO.getRefreshToken());
+            log.info("token_type ::::: {}", tokenDTO.getTokenType());
 
             // 발급된 토큰으로 사용자 정보 조회
             String userResponse = restClient.post()
