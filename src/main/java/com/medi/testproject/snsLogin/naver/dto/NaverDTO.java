@@ -1,4 +1,4 @@
-package com.medi.testproject.naver.dto;
+package com.medi.testproject.snsLogin.naver.dto;
 
 import lombok.Builder;
 import lombok.Data;

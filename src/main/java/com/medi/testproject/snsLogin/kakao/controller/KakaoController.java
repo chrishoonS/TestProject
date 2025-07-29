@@ -1,8 +1,8 @@
-package com.medi.testproject.kakao.controller;
+package com.medi.testproject.snsLogin.kakao.controller;
 
 import com.medi.testproject.common.MsgEntity;
-import com.medi.testproject.kakao.dto.KakaoDTO;
-import com.medi.testproject.kakao.service.KakaoService;
+import com.medi.testproject.snsLogin.kakao.dto.KakaoDTO;
+import com.medi.testproject.snsLogin.kakao.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

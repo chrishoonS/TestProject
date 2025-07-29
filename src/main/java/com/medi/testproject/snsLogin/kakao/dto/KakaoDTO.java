@@ -1,4 +1,4 @@
-package com.medi.testproject.kakao.dto;
+package com.medi.testproject.snsLogin.kakao.dto;
 
 
 import lombok.Builder;

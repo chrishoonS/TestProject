@@ -1,9 +1,9 @@
-package com.medi.testproject.naver.controller;
+package com.medi.testproject.snsLogin.naver.controller;
 
 
 import com.medi.testproject.common.MsgEntity;
-import com.medi.testproject.naver.dto.NaverDTO;
-import com.medi.testproject.naver.service.NaverService;
+import com.medi.testproject.snsLogin.naver.dto.NaverDTO;
+import com.medi.testproject.snsLogin.naver.service.NaverService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class NaverController {
     private final NaverService naverService;
 
     @GetMapping("/callback")
-    public ResponseEntity<MsgEntity> callback(HttpServletRequest request) throws Exception {
+    public ResponseEntity<MsgEntity> callback(HttpServletRequest request){
         NaverDTO naverInfo = naverService.getUserInfo(request.getParameter("code"));
 
         return ResponseEntity.ok()
