@@ -1,0 +1,28 @@
+
+kakao:
+  client:
+    id: 00d421dfe436939847e9b29c63ea50ff
+  redirect:
+    url: http://localhost:8080/kakao/callback
+  auth:
+    uri: https://kauth.kakao.com
+  api:
+    uri: https://kapi.kakao.com
+
+naver:
+  client:
+    id: F5RzgfzE8ER43MRwOClV
+    secret: gP5FwjYxTo
+  redirect:
+    url: http://localhost:8080/naver/callback
+  auth:
+    uri: https://nid.naver.com
+  api:
+    uri: https://openapi.naver.com
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5454/db_test
+    username: testuser
+    password: testuser12!@
+    driver-class-name: org.postgresql.Driver

@@ -1,7 +1,7 @@
 package com.medi.testproject;
 
-import com.medi.testproject.kakao.service.KakaoService;
-import com.medi.testproject.naver.service.NaverService;
+import com.medi.testproject.snsLogin.kakao.service.KakaoService;
+import com.medi.testproject.snsLogin.naver.service.NaverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
