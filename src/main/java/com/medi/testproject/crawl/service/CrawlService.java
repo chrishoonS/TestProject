@@ -39,7 +39,7 @@ public class CrawlService {
      * 네이버 뉴스 크롤링 스케줄러
      * 평일 09:00 ~ 17:00 매 정시에 실행
      */
-    @Scheduled(cron = "0 0 9-17 ? * MON-FRI")
+    @Scheduled(cron = "0 0 9-18 ? * MON-FRI")
     public void crawlNaverNews() {
 
         // 실행 시간 로깅
