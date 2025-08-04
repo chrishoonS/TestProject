@@ -11,6 +11,9 @@ spring:
       port: 6379
       timeout: 6000
 
+  jackson:
+    time-zone: Asia/Seoul
+
 
 kakao:
   client:
