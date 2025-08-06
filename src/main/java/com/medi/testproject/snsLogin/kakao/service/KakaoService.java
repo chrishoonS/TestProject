@@ -1,11 +1,11 @@
 package com.medi.testproject.snsLogin.kakao.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medi.testproject.common.FormDataEncoder;
-import com.medi.testproject.snsLogin.kakao.dto.KakaoDTO;
-import com.medi.testproject.oauth.OAuthProvider;
 import com.medi.testproject.oauth.OAuthTokenResponseDTO;
+import com.medi.testproject.snsLogin.kakao.dto.KakaoDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -84,6 +84,7 @@ public class KakaoService {
             log.info("token_type ::::: {}", tokenDTO.getTokenType());
 
             // 발급된 토큰으로 사용자 정보 조회
+            // 요청 url, header 등을 설정하고 응답 body를 String으로 추출(json 문자열)
             String userResponse = restClient.post()
                     .uri(KAKAO_API_URI + "/v2/user/me")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDTO.getAccessToken())
@@ -91,15 +92,16 @@ public class KakaoService {
                     .retrieve()
                     .body(String.class);
 
-            // Jackson에서 제공하는 JSON Tree API. JSON 접근 시 null-safe 방식
+            // Jackson에서 제공하는 JSON Tree API
+            // 문자열 JSON을 Jackson 트리구조(JsonNode)로 파싱
             JsonNode root = objectMapper.readTree(userResponse);
 
-            return KakaoDTO.builder()
-                    .id(root.path("id").asLong())
-                    .email(root.path("kakao_account").path("email").asText(null))
-                    .nickname(root.path("kakao_account").path("profile").path("nickname").asText())
-                    .provider(String.valueOf(OAuthProvider.KAKAO))
-                    .build();
+            // DTO에 없는 필드가 JSON에 포함되어 있어도 무시하는 옵션
+            // KakaoDTO에 없으면 그냥 skip으로 매핑 예외발생 X
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            // KakaoDTO로 매핑
+            return objectMapper.treeToValue(root, KakaoDTO.class);
 
         } catch (Exception e) {
             log.error("카카오 로그인 오류", e);
