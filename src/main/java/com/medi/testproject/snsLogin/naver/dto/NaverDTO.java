@@ -7,11 +7,16 @@ import lombok.Data;
 @Data
 public class NaverDTO {
 
-    private String id;
-    private String email;
-    private String name;
+    private String resultcode;
+    private String message;
+    private Response response;
 
-    // 공통
-    private String provider; // Kakao, Naver, Google, Apple
+    @Builder
+    @Data
+    public static class Response {
+        private String id;
+        private String email;
+        private String name;
+    }
 
 }

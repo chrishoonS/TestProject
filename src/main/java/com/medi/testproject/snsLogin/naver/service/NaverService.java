@@ -1,9 +1,9 @@
 package com.medi.testproject.snsLogin.naver.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medi.testproject.common.FormDataEncoder;
-import com.medi.testproject.oauth.OAuthProvider;
 import com.medi.testproject.oauth.OAuthTokenResponseDTO;
 import com.medi.testproject.snsLogin.naver.dto.NaverDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -97,15 +97,11 @@ public class NaverService {
                     .retrieve()
                     .body(String.class);
 
-            // Jackson에서 제공하는 JSON Tree API. JSON 접근 시 null-safe 방식
             JsonNode root = objectMapper.readTree(userResponse);
 
-            return NaverDTO.builder()
-                    .id(root.path("response").path("id").asText())
-                    .email(root.path("response").path("email").asText(null))
-                    .name(root.path("response").path("name").asText())
-                    .provider(String.valueOf(OAuthProvider.NAVER))
-                    .build();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            return objectMapper.treeToValue(root, NaverDTO.class);
 
         }catch (Exception e) {
             log.error("네이버 로그인 오류", e);
