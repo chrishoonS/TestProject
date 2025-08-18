@@ -36,3 +36,14 @@ naver:
   api:
     uri: https://openapi.naver.com
 
+apple:
+  auth:
+    uri: https://appleid.apple.com
+  client:
+    id: com.mediplussolution.hime.dev
+  team:
+    id: 356H38265K
+  login:
+    key: 3JF847C2YR
+  redirect:
+    url: https://dev.hi-me.net/main-api/v1/auth/sns/apple/callback

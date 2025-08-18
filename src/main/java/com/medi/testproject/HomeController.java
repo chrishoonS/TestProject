@@ -1,5 +1,6 @@
 package com.medi.testproject;
 
+import com.medi.testproject.snsLogin.apple.service.AppleService;
 import com.medi.testproject.snsLogin.kakao.service.KakaoService;
 import com.medi.testproject.snsLogin.naver.service.NaverService;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +15,13 @@ public class HomeController {
 
     private final KakaoService kakaoService;
     private final NaverService naverService;
+    private final AppleService appleService;
 
     @RequestMapping(value="/", method= RequestMethod.GET)
     public String login(Model model) {
         model.addAttribute("kakaoUrl", kakaoService.getLoginUrl());
         model.addAttribute("naverUrl", naverService.getLoginUrl());
+        model.addAttribute("appleUrl", appleService.getLoginUrl());
 
         return "index";
     }
