@@ -26,7 +26,6 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
-
 kakao:
   client:
     id: 00d421dfe436939847e9b29c63ea50ff
@@ -52,7 +51,7 @@ apple:
   auth:
     uri: https://appleid.apple.com
   client:
-    id: com.mediplussolution.hime.dev
+    id: com.mediplussolution.hime.signin.apple
   team:
     id: 356H38265K
   login:
