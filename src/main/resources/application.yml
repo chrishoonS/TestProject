@@ -5,11 +5,23 @@ spring:
     password: testuser12!@
     driver-class-name: org.postgresql.Driver
 
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      keepalive-time: 30000
+
   data:
     redis:
       host: localhost
       port: 6379
-      timeout: 6000
+      timeout: 1000
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
 
   jackson:
     time-zone: Asia/Seoul
@@ -47,3 +59,9 @@ apple:
     key: 3JF847C2YR
   redirect:
     url: https://dev.hi-me.net/main-api/v1/auth/sns/apple/callback
+
+server:
+  tomcat:
+    threads:
+      min-spare: 10
+      max: 200
