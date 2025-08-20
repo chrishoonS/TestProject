@@ -1,0 +1,48 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5454/db_test
+    username: testuser
+    password: testuser12!@
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      keepalive-time: 30000
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 1000
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+
+  jackson:
+    time-zone: Asia/Seoul
+  # Spring dev tool, HTML/CSS/JS 등의 변경 사항을 저장하면 자동으로 브라우저 새로고침해줌
+  devtools:
+    livereload:
+      enabled: true
+
+server:
+  tomcat:
+    threads:
+      min-spare: 10 # 클라이언트 요청을 빠르게 처리하기 위해 항상 최소 10개의 스레드 대기.
+      max: 200      # 톰캣이 허용할 수 있는 최대 동시 요청 처리 스레드 수.
+
+  error:
+    path: error                 # 예외가 발생했을 때 요청을 /error 경로로 포워딩.
+    include-exception: false    # false이면 "java.lang.NullPointerException" 같은 정보가 응답에 포함되지 않음.
+    include-stacktrace: never   # 스택트레이스를 에러 응답에 포함할지 여부 : 절대 포함 안함
+    whitelabel:
+      enabled: false            # Spring Boot의 기본 흰 바탕 에러 페이지(Whitelabel Error Page) 비활성화.
