@@ -46,8 +46,11 @@ public class AppleService {
         String loginUrl = UriComponentsBuilder.fromUriString(APPLE_AUTH_URI + "/auth/authorize")
                 .queryParam("client_id", APPLE_CLIENT_ID)
                 .queryParam("redirect_uri", APPLE_REDIRECT_URL)
-                .queryParam("response_type", "code")
-                .toUriString();
+                .queryParam("response_type", "code id_token")
+                .queryParam("scope", "name email")
+                .queryParam("response_mode", "form_post")
+                .build()
+                .toUriString();;
 
         log.info("Access Token URL ::::: {}", loginUrl);
 
