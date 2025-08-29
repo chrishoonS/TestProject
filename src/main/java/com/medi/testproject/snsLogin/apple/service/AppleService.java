@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Service
@@ -43,14 +42,10 @@ public class AppleService {
      **/
     public String getLoginUrl() {
 
-        String loginUrl = UriComponentsBuilder.fromUriString(APPLE_AUTH_URI + "/auth/authorize")
-                .queryParam("client_id", APPLE_CLIENT_ID)
-                .queryParam("redirect_uri", APPLE_REDIRECT_URL)
-                .queryParam("response_type", "code id_token")
-                .queryParam("scope", "name email")
-                .queryParam("response_mode", "form_post")
-                .build()
-                .toUriString();;
+        String loginUrl = APPLE_AUTH_URI + "/auth/authorize"
+                + "?client_id=" + APPLE_CLIENT_ID
+                + "&redirect_uri=" + APPLE_REDIRECT_URL
+                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
 
         log.info("Access Token URL ::::: {}", loginUrl);
 
