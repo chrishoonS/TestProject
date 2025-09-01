@@ -22,7 +22,6 @@ public class HomeController {
         model.addAttribute("kakaoUrl", kakaoService.getLoginUrl());
         model.addAttribute("naverUrl", naverService.getLoginUrl());
         model.addAttribute("appleUrl", appleService.getLoginUrl());
-//        model.addAttribute("appleClientId", "com.mediplussolution.hime.dev.signin.apple");
 
         return "index";
     }

@@ -6,36 +6,21 @@
 
 <body>
 <div>
+    <!-- 카카오 로그인 -->
     <p><a th:href="@{|${kakaoUrl}|}">
         <img th:src="@{/kakao/img/kakao_login_medium_narrow.png}" style="width:150px; height:40px;" alt="카카오로그인">
     </a></p>
+
+    <!-- 네이버 로그인 -->
     <p><a th:href="@{|${naverUrl}|}">
         <img th:src="@{/naver/img/naver_login_medium_narrow.png}" style="width:150px; height:40px;" alt="네이버로그인">
     </a></p>
+
+    <!-- 애플 로그인 -->
     <p><a th:href="@{|${appleUrl}|}">
         <img th:src="@{/naver/img/naver_login_medium_narrow.png}" style="width:150px; height:40px;" alt="애플로그인">
     </a></p>
-
-<!--    <p id="appleid-signin"-->
-<!--         data-color="black"-->
-<!--         data-border="true"-->
-<!--         data-type="sign in"-->
-<!--         style="width:150px; height:40px;"-->
-<!--         th:attr="data-client-id=${appleClientId}, data-redirect-uri=${appleUrl}">-->
-<!--    </p>-->
-
 </div>
-<!--<script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>-->
-<!--<script th:inline="javascript">-->
-<!--    document.addEventListener("DOMContentLoaded", function () {-->
-<!--        AppleID.auth.init({-->
-<!--            clientId: [[${appleClientId}]],-->
-<!--            scope: "name email",-->
-<!--            redirectURI: [[${appleUrl}]],-->
-<!--            usePopup: true-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 
 </body>
 </html>
