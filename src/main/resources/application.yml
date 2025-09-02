@@ -28,9 +28,12 @@ spring:
 
 kakao:
   client:
-    id: 00d421dfe436939847e9b29c63ea50ff
+#    id: 00d421dfe436939847e9b29c63ea50ff
+    id: 2f7a0c460bb2fe8e7819b49eccaf3bde    #dev
   redirect:
-    url: http://localhost:8080/kakao/callback
+#    url: http://localhost:8080/kakao/callback
+#    url: http://localhost:38080/main-api/v1/auth/sns/kakao/callback
+    url: https://dev.hi-me.net/main-api/v1/auth/sns/kakao/callback #dev
   auth:
     uri: https://kauth.kakao.com
   api:
@@ -38,10 +41,14 @@ kakao:
 
 naver:
   client:
-    id: F5RzgfzE8ER43MRwOClV
-    secret: gP5FwjYxTo
+#    id: F5RzgfzE8ER43MRwOClV
+    id: dvqMjKV2DU166UeRyctA #dev
+#    secret: gP5FwjYxTo
+    secret: e88g7bl4XS       #dev
   redirect:
-    url: http://localhost:8080/naver/callback
+#    url: http://localhost:8080/naver/callback
+#    url: http://localhost:38080/main-api/v1/auth/sns/naver/callback
+    url: https://dev.hi-me.net/main-api/v1/auth/sns/naver/callback  #dev
   auth:
     uri: https://nid.naver.com
   api:
@@ -51,7 +58,7 @@ apple:
   auth:
     uri: https://appleid.apple.com
   client:
-    id: com.mediplussolution.hime.dev
+    id: dev.hime.mediplussolution.com
   team:
     id: 356H38265K
   login:
