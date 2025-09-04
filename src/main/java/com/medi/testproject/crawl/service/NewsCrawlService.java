@@ -20,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class CrawlService {
+public class NewsCrawlService {
 
     private static final String NEWS_HOME_URL = "https://news.naver.com";
     private static final String NEWS_TOP_MENU = "li.Nlist_item";
