@@ -22,6 +22,7 @@ public class HomeController {
         model.addAttribute("kakaoUrl", kakaoService.getLoginUrl());
         model.addAttribute("naverUrl", naverService.getLoginUrl());
         model.addAttribute("appleUrl", appleService.getLoginUrl());
+        model.addAttribute("kakaoLogoutUrl", kakaoService.getLogoutUrl());
 
         return "index";
     }

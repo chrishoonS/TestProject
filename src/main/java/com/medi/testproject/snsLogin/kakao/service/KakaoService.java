@@ -108,4 +108,20 @@ public class KakaoService {
             throw new RuntimeException("카카오 로그인 실패");
         }
     }
+
+    /**
+     *  로그아웃 URL 생성
+     **/
+    public String getLogoutUrl() {
+
+        String loginUrl = UriComponentsBuilder.fromUriString(KAKAO_AUTH_URI + "/v1/user/logout")
+                .queryParam("client_id", KAKAO_CLIENT_ID)
+                .queryParam("redirect_uri", KAKAO_REDIRECT_URL)
+                .queryParam("response_type", "code")
+                .toUriString();
+
+        log.info("Access Token URL ::::: {}", loginUrl);
+
+        return loginUrl;
+    }
 }
