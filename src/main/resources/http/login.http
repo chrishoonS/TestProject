@@ -1,0 +1,55 @@
+### token/access
+POST http://localhost:18080/auth-api/v1/token/access
+Content-Type: application/json
+
+{
+  "uid": "uid"
+}
+
+> {%
+
+    const json = typeof response.body === 'string'
+        ? JSON.parse(response.body)
+        : response.body;
+
+    const data = (json && json.data) || {};
+    const uid = data.uid;
+    const access = data.accessToken;
+    const refresh = data.refreshToken;
+
+    if (uid) client.global.set('uid', uid);
+    if (access) client.global.set('accessToken', access);
+    if (refresh) client.global.set('refreshToken', refresh);
+%}
+
+### 토큰 검증
+GET http://localhost:38080/main-api/v1/auth/validToken
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "memberSeq": "1",
+  "parameters": {"{name}":"한제형"}
+}
+
+### kakao 콜백
+POST http://localhost:38080/main-api/v1/auth/sns/kakao/callback
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "1"
+}
+
+
+### PASS 콜백
+POST http://localhost:38080/main-api/v1/auth/sns/pass/callback
+Content-Type: application/json
+
+{
+  "token_version_id": "20250915143235FG-NCH9CG093-01H66-C1FHBFGD76",
+  "enc_data": "uld8uqeGlvtu7oaT3UaPoG6FFt3AlxwKpNArSrBcIEpxwJ61Na9wlXrD/WadkypnqTVjNs7Yx2sixJrzp1EOx7/7Y%2BmwroLfYFETd/DafhMKZwUnkbQSuRVEQxd3vFr6yQC0xazvjnLoWASzYDdzrrtCN%2BthR8Bo8N8jVP1cIKCJj/kg/BrFXswG71iYGHANGh/R0COz03758i21inTkmRlw7BqZ6dv8g52JD5SgATcEzkYpvixpPQTR2c%2BGH%2BtW6zJCH9czLJLEkZQfG%2B8CqXhnidY0%2Bq6uvaMUK0YVRePg05vCKGJqo9NzAkV6l4R%2BJYbgcckpD9U2iXDDW7/LJ3u7vfSzMV0Vey1hZb33jSxeRD7x/WRbx82W%2Bp2Cz7enQouyJ8wJzoiGud/XrKhmGygFZADR8XqMHp156zfn3w6/b7nTzt2Ep3zEQBVLhcH7Y%2Btyjg6bXp1N0Sp5ZVpEpM3e/VtgjY%2BUXcmvrUHw%2ByS1P0Zv%2Bkk3wcLJw71P6KaBjf2f2hM5MmrlpFunG2LkqHYCSONmqtf7Pdu5QUGUvK2TcuuxGBKwRaybiVl4urFkASjrL854th41gjeUI9JkSEiiFk/w5ECBHdUlRS4ZMJnAy4vBbkwrC0LIyM7GZW59U4l1IiCtx84fvY9yfL9RVzZIjxUSLpUscrvCNBq8njA",
+  "integrity_value": "T7vW7qng4VIqU054inJBLPhdGU3YBCfHZS8q8HSmPX8="
+}
+
+
