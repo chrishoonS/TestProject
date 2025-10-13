@@ -3,29 +3,29 @@ spring:
     activate:
       on-profile: real
 
-  datasource:
-    url: jdbc:postgresql://localhost:5454/db_test
-    username: testuser
-    password: testuser12!@
-    driver-class-name: org.postgresql.Driver
-
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      keepalive-time: 30000
-
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      timeout: 1000
-      lettuce:
-        pool:
-          max-active: 16
-          max-idle: 8
-          min-idle: 2
+#  datasource:
+#    url: jdbc:postgresql://localhost:5454/db_test
+#    username: testuser
+#    password: testuser12!@
+#    driver-class-name: org.postgresql.Driver
+#
+#    hikari:
+#      minimum-idle: 5
+#      maximum-pool-size: 20
+#      idle-timeout: 30000
+#      max-lifetime: 1800000
+#      keepalive-time: 30000
+#
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      timeout: 1000
+#      lettuce:
+#        pool:
+#          max-active: 16
+#          max-idle: 8
+#          min-idle: 2
 
   jackson:
     time-zone: Asia/Seoul

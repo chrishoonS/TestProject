@@ -1,5 +1,5 @@
 ### token/access
-POST http://localhost:18080/auth-api/v1/token/access
+POST http://localhost:8080/auth-api/v1/token/access
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 %}
 
 ### 토큰 검증
-GET http://localhost:38080/main-api/v1/auth/validToken
+GET http://localhost:8080/main-api/v1/auth/validToken
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -33,7 +33,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### kakao 콜백
-POST http://localhost:38080/main-api/v1/auth/sns/kakao/callback
+POST http://localhost:8080/main-api/v1/auth/sns/kakao/callback
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -43,7 +43,7 @@ Authorization: Bearer {{accessToken}}
 
 
 ### PASS 콜백
-POST http://localhost:38080/main-api/v1/auth/sns/pass/callback
+POST http://localhost:8080/main-api/v1/auth/sns/pass/callback
 Content-Type: application/json
 
 {
