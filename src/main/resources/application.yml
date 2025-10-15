@@ -28,10 +28,10 @@ spring:
 
 kakao:
   client:
-    id: 00d421dfe436939847e9b29c63ea50ff
-#    id: 2f7a0c460bb2fe8e7819b49eccaf3bde    #dev
+#    id: 00d421dfe436939847e9b29c63ea50ff
+    id: 2f7a0c460bb2fe8e7819b49eccaf3bde    #dev
   redirect:
-    url: http://localhost:8080/kakao/callback
+    url: http://localhost:3000/login/callback/kakao
 #    url: http://localhost:38080/main-api/v1/auth/sns/kakao/callback
 #    url: https://dev.hi-me.net/main-api/v1/auth/sns/kakao/callback #dev
   auth:
@@ -72,4 +72,4 @@ server:
     threads:
       min-spare: 10
       max: 200
-#  port: 3000
+  port: 3000
