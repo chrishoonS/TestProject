@@ -1,7 +1,7 @@
 # TestProject
 
 ## 📂 프로젝트 구조 (Directory Structure)
-프로젝트 루트 디렉터리부터의 전체 구조는 다음과 같습니다.
+전체 구조는 다음과 같습니다.
 ```
 TestProject
 ├── .gradle
