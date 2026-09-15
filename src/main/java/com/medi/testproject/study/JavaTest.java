@@ -11,11 +11,17 @@ public class JavaTest {
 
         Member c = new Member(1L, "Lee");
 
-        System.out.println(a == b);       // ①
-        System.out.println(a.equals(b));  // ②
+        System.out.println(a == b);
+        System.out.println(a.equals(b));
 
-        System.out.println(a == c);       // ③
-        System.out.println(a.equals(c));  // ④
+        System.out.println(a == c);
+        System.out.println(a.equals(c));
+
+        Member member = new Member(1L, "Kim");
+
+        int hash = member.hashCode();
+
+        System.out.println(hash);
     }
 
     static void change(Member member) {
