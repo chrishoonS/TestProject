@@ -21,6 +21,19 @@ public class Day3 {
         members.add(b); // 12345
 
         System.out.println(members.size()); // 1
+
+        String a1 = new String("hello");
+        String b1 = a1.intern();
+        String c1 = "hello";
+        System.out.println("++++++++++");
+        System.out.println(a1);
+        System.out.println(b1);
+        System.out.println(c1);
+        System.out.println("++++++++++");
+
+        System.out.println(a1 == b1); // false
+        System.out.println(a1 == c1); // false
+        System.out.println(b1 == c1); // true
     }
 
     static class Member {
