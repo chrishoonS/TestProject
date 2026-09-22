@@ -1,10 +1,10 @@
-package com.medi.testproject.study.day03;
+package com.medi.testproject.study;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Day3 {
+public class Day003 {
 
     public static void main(String[] args) {
 
