@@ -1,49 +1,28 @@
 package com.medi.testproject.study;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class JavaTest {
+
 
     public static void main(String[] args) {
 
-        Member a = new Member(1L, "Kim");
-        Member b = a;
+        String a = "hello";
+        String b = new String("hello");
+        String c = b.intern();
 
-        change(b);
+        Set<String> set = new HashSet<>();
 
-        Member c = new Member(1L, "Lee");
+        set.add(a);
+        set.add(b);
+        set.add(c);
 
-        System.out.println(a == b);
-        System.out.println(a.equals(b));
-
-        System.out.println(a == c);
-        System.out.println(a.equals(c));
-
-        Member member = new Member(1L, "Kim");
-
-        int hash = member.hashCode();
-
-        System.out.println(hash);
+        System.out.println(a == b);       // ①
+        System.out.println(b == c);       // ①
+        System.out.println(a.equals(b));  // ②
+        System.out.println(a == c);       // ③
+        System.out.println(set.size());   // ④
     }
 
-    static void change(Member member) {
-        member.name = "Lee";
-
-        member = new Member(2L, "Park");
-    }
-
-    static class Member {
-
-        Long id;
-        String name;
-
-        Member(Long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            Member other = (Member) obj;
-            return this.id.equals(other.id);
-        }
-    }
 }
